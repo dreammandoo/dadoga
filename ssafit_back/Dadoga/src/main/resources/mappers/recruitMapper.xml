@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.board.model.dao.RecruitDao">
+	<select id="selectAll" resultType="Recruit">
+		SELECT *
+		FROM recruit
+		ORDER BY createdtime DESC
+	</select>
+	
+	<select id="selectOne" parameterType="int" resultType="Recruit">
+		SELECT *
+		FROM recruit
+		WHERE id = #{id}
+	</select>
+	
+	<update id="update" parameterType="Recruit">
+		UPDATE recruit
+		SET done=#{done}, title=#{title}, content=#{content}, datetime=#{datetime}, location=#{location}, applierslimit=#{applierslimit}, part=#{part}, gender=#{gender} 
+		WHERE id = #{id}
+	</update>
+	
+	<insert id="insert" parameterType="Recruit" keyProperty="id" useGeneratedKeys="true">
+		INSERT INTO recruit(id, title, content, writerid, datetime, location, applierslimit, part, gender, img)
+		VALUES (#{id}, #{title}, #{content}, #{writerid}, #{datetime}, #{location}, #{applierslimit}, #{part}, #{gender}, #{img})
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM recruit
+		WHERE id = #{id}
+	</delete>
+	
+	<select id="selectMy" parameterType="int" resultType="Recruit">
+		SELECT *
+		FROM recruit
+		WHERE writerid = #{writerid}
+	</select>
+	
+	<update id="addApplier" parameterType="int">
+		UPDATE recruit
+		SET appliers = CASE
+			WHEN appliers <![CDATA[ < ]]> applierslimit THEN appliers + 1
+			ELSE appliers
+			END
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delApplier" parameterType="int">
+		UPDATE recruit
+		SET appliers = CASE
+			WHEN appliers <![CDATA[ > ]]> 0 THEN appliers - 1
+			ELSE appliers
+			END
+		WHERE id = #{id}
+	</update>
+	
+	
+</mapper>
